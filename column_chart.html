@@ -1,0 +1,84 @@
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<html>
+<head>
+<style>
+
+</style>
+<script type="text/javascript" src="jquery-git2.min.js"></script>
+<script src="highcharts/highcharts.js"></script>
+<script src="highcharts/exporting.js"></script>
+<script type="text/javascript">
+        jQuery(document).ready(function() { 
+ 
+             var options = {
+                chart: {
+                    renderTo: 'container',
+                    type: 'column'
+                },
+                title: {
+                    text: 'Work Type Status Summary daily'                 
+                },
+                subtitle: {
+                    text: '2015 July27-31'
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    title: {
+                        text: 'Count'
+                    }
+                },
+                series: []
+            };
+            // JQuery function to process the csv data
+            $.get('workTypeStatus.csv', function(data) {
+                // Split the lines
+                var lines = data.split('\n');
+                $.each(lines, function(lineNo, line) {
+                    var items = line.split(',');
+                     
+                    // header line contains names of categories
+                    if (lineNo == 0) {
+                        $.each(items, function(itemNo, item) {
+                            //skip first item of first line
+                            if (itemNo > 0) options.xAxis.categories.push(item);
+                        });
+                    }
+                     
+                    // the rest of the lines contain data with their name in the first position
+                    else {
+                        var series = { 
+                            data: []
+                        };
+                        $.each(items, function(itemNo, item) {
+                            if (itemNo == 0) {
+                                series.name = item;
+                            } else {
+                                series.data.push(parseFloat(item));
+                            }
+                        });
+                         
+                        options.series.push(series);
+ 
+                    }
+                     
+                });
+                //putting all together and create the chart
+                var chart = new Highcharts.Chart(options);
+            });         
+             
+                     
+             
+        });
+        </script>
+         
+    </head>
+    <body>
+         
+        <!-- 3. Add the container -->
+        <div id="container" style="width: 600px; height: 400px; margin: 0 auto"></div>      
+                 
+    </body>
+</html>
