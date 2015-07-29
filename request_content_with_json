@@ -1,0 +1,37 @@
+
+ JSONObject jsonResponse;
+ try {
+ /****** Creates a new JSONObject with name/value mappings from the JSON string. ********/
+ jsonResponse = new JSONObject(responseString);
+ /***** Returns the value mapped by name if it exists and is a JSONArray. ***/
+ /*******  Returns null otherwise.  *******/
+ JSONArray jsonMainNode = jsonResponse.optJSONArray("Insurances");
+ /*********** Process each JSON Node ************/
+ int lengthJsonArr = jsonMainNode.length();
+ for(int i=0; i < lengthJsonArr; i++)
+ {
+ /****** Get Object for each JSON node.***********/
+ JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+ /******* Fetch node values **********/
+ String claimerID = jsonChildNode.optString("ClaimerID").toString();
+ String insuranceID = jsonChildNode.optString("InsuranceID").toString();
+ String carLicenseID = jsonChildNode.optString("CarLicenseID").toString();
+ String email = jsonChildNode.optString("Email").toString();
+ String mobileNumber = jsonChildNode.optString("MobileNumber").toString();
+ Insurance insurance=new Insurance(claimerID,insuranceID,carLicenseID,email,mobileNumber);
+ insurances.add(insurance);
+ }
+ } catch (JSONException e) {
+ try {
+JSONObject jsonRequest=new JSONObject();
+jsonRequest.put(AccidentInfoRequest.KEY_CLAIMERID ,getClaimerId());
+ jsonRequest.put(AccidentInfoRequest.KEY_INSURANCEID ,getInsuranceId());
+ jsonRequest.put(AccidentInfoRequest.KEY_ACCIDENTLATITUDE ,getAccidentLatitude());
+ jsonRequest.put(AccidentInfoRequest.KEY_ACCIDENTLONGITUDE ,getAccidentLongitude());
+ jsonRequest.put(AccidentInfoRequest.KEY_LOCATIONINFO ,getLocationInfo());
+// setContent(jsonRequest.toString());
+ String req=jsonRequest.toString();
+ setContent(req);
+ }
+ catch(Exception e){
+ }
